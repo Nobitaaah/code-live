@@ -66,11 +66,6 @@ function MainPage(props) {
                 </Link>
             </div>
 
-            <button onClick={generateCode}>Click</button>
-            {code.length > 0 &&
-
-                <Link to={newTo}>Editor</Link>
-            }
 
         </div >);
 }
