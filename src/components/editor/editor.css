@@ -1,0 +1,22 @@
+
+.listButton-dark {
+    margin: 0;
+    background-color: #202124;
+    position: relative;
+}
+
+.listButton-light {
+    margin: 0;
+    background-color: #FFFFFE;
+    position: relative;
+}
+
+.language-name-dark {
+    padding-left: 2.5%;
+    color: white;
+}
+
+.language-name-light {
+    padding-left: 2.5%;
+    color: dark;
+}

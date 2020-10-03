@@ -1,0 +1,8 @@
+export {default as Login } from './auth/Login'
+export {default as Register } from './auth/Register'
+export {default as Dashboard } from './dashboard/Dashboard'
+export {default as Landing } from './layout/Landing'
+export {default as Navbar } from './layout/Navbar'
+export {default as PrivateRoute} from './private-route/PrivateRoute'
+export {default as Editor} from './editor/editor'
+export {default as MainPage} from './mainpage/mainpage'
