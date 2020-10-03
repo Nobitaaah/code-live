@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef } from 'react'
 import './editor.css'
 import { ControlledEditor } from "@monaco-editor/react"
 import { useLocation, useParams } from "react-router-dom";
-
+import { FaRegLightbulb } from 'react-icons/fa';
+import { RiSunLine } from 'react-icons/ri';
 
 // Code editor
 const Editor = (props) => {
@@ -49,7 +50,7 @@ const Editor = (props) => {
     }
 
     const toggleLanguage = () => {
-        setLanguage(language === "javascript" ? "python" : "javascript")
+        setLanguage(language === "javascript" ? "go" : "javascript")
     }
 
     // If language changes on one socket, emit to all other
@@ -90,30 +91,54 @@ const Editor = (props) => {
 
     }, [])
 
+    const languages = ["javascript", "python", "c++", "c", "java", "go"]
 
+    const changeLanguage = (e) => {
+        // console.log(languages[e.target.value])
+
+        setLanguage(languages[e.target.value])
+    }
 
     const renderTrue = () => {
         return (
             <>
-                <div className={theme === "light" ? 'listButton-light' : 'listButton-dark'}>
-                    <button onClick={toggleTheme} disabled={!isEditorReady}>
-                        Toggle theme
-                </button>
-                    <button onClick={toggleLanguage} disabled={!isEditorReady}>
-                        Toggle language
-                </button>
-                    <span className={theme === "light" ? 'language-name-light' : 'language-name-dark'}>{language[0].toUpperCase() + language.substr(1)}</span>
-                    <span className={theme === "light" ? 'language-name-light' : 'language-name-dark'}>Participants: {users}</span>
+                <div className="navBar">
+                    <div className={theme === "light" ? 'listButton-light' : 'listButton-dark'}>
+                        {theme === "light" &&
+                        <FaRegLightbulb className="bulbIcon" onClick={toggleTheme} disabled={!isEditorReady}></FaRegLightbulb>
+                            // < onClick={toggleTheme} disabled={!isEditorReady}>
+                            //     Light
+                            // </button>
+                            }
+                        {theme !== "light" &&
+                            // <button class="ui secondary button" onClick={toggleTheme} disabled={!isEditorReady}>
+                            //     Dark
+                            // </button>
+                            <RiSunLine className="sunIcon" onClick={toggleTheme} disabled={!isEditorReady}></RiSunLine>
+                            }
+
+                        <select className={theme === "light" ? 'select-light' : 'select-dark'} onChange={changeLanguage}>
+                            <option value="0">Javascript</option>
+                            <option value="1">Python</option>
+                            <option value="3">C++</option>
+                            <option value="3">C</option>
+                            <option value="4">Java</option>
+                            <option value="5">Go</option>
+                        </select>
+
+                        {/* <span className={theme === "light" ? 'language-name-light' : 'language-name-dark'}>{language[0].toUpperCase() + language.substr(1)}</span> */}
+                        <span className={theme === "light" ? 'language-name-light' : 'language-name-dark'}>Participants: {users}</span>
+                    </div>
+                    <ControlledEditor
+                        height="100vh"
+                        theme={theme}
+                        language={language}
+                        value={value}
+                        editorDidMount={handleEditorDidMount}
+                        onChange={handleEditorChange}
+                        loading={"Loading..."}
+                    />
                 </div>
-                <ControlledEditor
-                    height="100vh"
-                    theme={theme}
-                    language={language}
-                    value={value}
-                    editorDidMount={handleEditorDidMount}
-                    onChange={handleEditorChange}
-                    loading={"Loading..."}
-                />
             </>
         )
     }
