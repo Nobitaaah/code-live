@@ -76,6 +76,7 @@ const Editor = (props) => {
         socket.on('language-update', (data) => {
             setLanguage(data)
         })
+
         socket.on('room-check', (data) => {
             if (data == false) {
                 setValid(false)
@@ -91,7 +92,7 @@ const Editor = (props) => {
 
     }, [])
 
-    const languages = ["javascript", "python", "c++", "c", "java", "go"]
+    const languages = ["javascript", "python", "c", "c", "java", "go"]
 
     const changeLanguage = (e) => {
         // console.log(languages[e.target.value])
@@ -106,27 +107,24 @@ const Editor = (props) => {
                     <div className={theme === "light" ? 'listButton-light' : 'listButton-dark'}>
                         {theme === "light" &&
                         <FaRegLightbulb className="bulbIcon" onClick={toggleTheme} disabled={!isEditorReady}></FaRegLightbulb>
-                            // < onClick={toggleTheme} disabled={!isEditorReady}>
-                            //     Light
-                            // </button>
+
                             }
                         {theme !== "light" &&
-                            // <button class="ui secondary button" onClick={toggleTheme} disabled={!isEditorReady}>
-                            //     Dark
-                            // </button>
+
                             <RiSunLine className="sunIcon" onClick={toggleTheme} disabled={!isEditorReady}></RiSunLine>
                             }
 
-                        <select className={theme === "light" ? 'select-light' : 'select-dark'} onChange={changeLanguage}>
+                        <select className={theme === "light" ? 'select-light' : 'select-dark'} onChange={changeLanguage} value="language">
+                            <option value="-1">Language</option>
                             <option value="0">Javascript</option>
                             <option value="1">Python</option>
-                            <option value="3">C++</option>
+                            <option value="2">C++</option>
                             <option value="3">C</option>
                             <option value="4">Java</option>
                             <option value="5">Go</option>
                         </select>
 
-                        {/* <span className={theme === "light" ? 'language-name-light' : 'language-name-dark'}>{language[0].toUpperCase() + language.substr(1)}</span> */}
+                        <span className={theme === "light" ? 'language-name-light' : 'language-name-dark'}>{language[0].toUpperCase() + language.substr(1)}</span>
                         <span className={theme === "light" ? 'language-name-light' : 'language-name-dark'}>Participants: {users}</span>
                     </div>
                     <ControlledEditor

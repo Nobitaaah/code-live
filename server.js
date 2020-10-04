@@ -58,7 +58,6 @@ io.on("connection", (socket) => {
         console.log("JOINING " + msg)
         socket.room = msg
         socket.join(msg)
-        io.sockets.in(socket.room).emit('joined-room', msg)
         let room = io.sockets.adapter.rooms[socket.room]
         io.sockets.in(socket.room).emit('joined-users', room.length)
     })
@@ -67,6 +66,8 @@ io.on("connection", (socket) => {
         console.log("CREATED-ROOM " + msg)
         rooms.push(msg)
     })
+
+
 
     // If language changes, broadcast to sockets
     socket.on('language-change', msg => {

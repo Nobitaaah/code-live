@@ -1,0 +1,145 @@
+.main {
+    visibility: hidden;
+}
+
+nav {
+    width: 100%;
+    background-color: white;
+    padding-left: 30px;
+    padding-right: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    display: inline-block;
+    font-size: 1.25em;
+}
+
+.create-room {
+    opacity: 0;
+}
+
+
+.headlineThird {
+    opacity: 0;
+}
+
+
+
+.nav-links {
+    list-style: none;
+    display: flex;
+}
+
+.nav-item{
+    margin-right: 1.5vw;
+}
+
+
+@media only screen and (max-width: 420px) {
+    .nav-item{
+        margin-right: 2.5vw;
+    }
+    
+}
+
+.nav-item a {
+    display: inline-block;
+    text-decoration: none;
+    color: black;
+}
+
+@keyframes strike {
+    0% {
+        transform-origin: 0% 50%;
+        transform: scaleX(0);
+    }
+    50% {
+        transform-origin: 0% 50%;
+        transform: scaleX(1);
+    }
+    50.01% {
+        transform-origin: 100% 50%;
+        transform: scaleX(1);
+    }
+    100% {
+        transform-origin: 100% 50%;
+        transform: scaleX(0);
+    }
+}
+
+.link {
+    position: relative;
+    text-decoration: none;
+    color: black;
+}
+
+.link:hover:after {
+    content: ' ';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: black;
+    animation: strike 1.25s ease-in-out forwards;
+}
+
+.container-flex {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+}
+
+.container-flex-title {
+    font-size: 1.75em;
+}
+
+.container-flex-intro {
+    font-size: 1.25em;
+}
+
+@media only screen and (max-width: 420px) {
+    .container-flex-title {
+        font-size: 1.5em;
+    }
+}
+
+@media only screen and (max-width: 420px) {
+    .container-flex-intro {
+        font-size: 1em;
+    }
+}
+
+.container-flex-info>*+* {
+    margin-top: 5vh;
+}
+
+.container-flex-info {
+    text-align: center;
+    margin-top: 10vh;
+}
+
+.container-flex-intro-continue {
+    width: 80%;
+    margin-left: 10%;
+    margin-right: 10%;
+    font-size: 1.25em;
+    margin-top: 2.5vh;
+}
+
+@media only screen and (max-width: 420px) {
+    .container-flex-intro-continue {
+        font-size: 1em;
+        margin-top: 1.5vh;
+    }
+}
+
+.codeShareGIF {
+    width: 80%;
+    height: auto;
+}

@@ -42,7 +42,7 @@ function App() {
     <Provider store={store}>
       <BrowserRouter>
         <div className="App">
-          <Route exact path={["/", "/register", "/login"]} component={Navbar} />
+          {/* <Route exact path={["/", "/register", "/login"]} component={Navbar} /> */}
           {/* <Route exact path="/" component={Landing} /> */}
           <Route exact path="/register" component={Register} />
           <Route exact path="/editor/:id([A-Za-z]{6})" component={() => <Editor socket={socket}></Editor>} />
