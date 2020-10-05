@@ -4,6 +4,7 @@ import { ControlledEditor } from "@monaco-editor/react"
 import { useLocation, useParams } from "react-router-dom";
 import { FaRegLightbulb } from 'react-icons/fa';
 import { RiSunLine } from 'react-icons/ri';
+import jwt_decode from "jwt-decode";
 
 // Code editor
 const Editor = (props) => {
@@ -21,8 +22,10 @@ const Editor = (props) => {
     // Set value of editor
     const [value, setValue] = useState('')
     const [valid, setValid] = useState(false)
+    const [sendInitialData, setSendInitialData] = useState(false)
     const [users, setUsers] = useState(0)
-
+    const [title, setTitle] = useState("Untitled")
+    const valueGetter = useRef();
     let { id } = useParams();
 
     useEffect(() => {
@@ -34,9 +37,10 @@ const Editor = (props) => {
     const editorRef = useRef()
 
     // Called on initialization, adds ref
-    const handleEditorDidMount = (_, editor) => {
+    const handleEditorDidMount = (_valueGetter, editor) => {
         setIsEditorReady(true);
         editorRef.current = editor
+        valueGetter.current = _valueGetter;
     }
 
     // Called whenever there is a change in the editor
@@ -67,6 +71,12 @@ const Editor = (props) => {
     }, [message])
 
 
+    useEffect(() => {
+        socket.emit('title-change', title)
+        // console.log('MESSAGE SENT')
+    }, [title])
+
+
     // Recieve code changes and language changes
     useEffect(() => {
         socket.on('code-update', (data) => {
@@ -75,6 +85,10 @@ const Editor = (props) => {
         })
         socket.on('language-update', (data) => {
             setLanguage(data)
+        })
+
+        socket.on('title-update', (data) => {
+            setTitle(data)
         })
 
         socket.on('room-check', (data) => {
@@ -86,17 +100,24 @@ const Editor = (props) => {
 
         })
 
+        socket.on('request-info', (data) => {
+            setSendInitialData(true)
+            // socket.emit('user-join', { title: title, message: value, language: language })
+        })
+
+
         socket.on('joined-users', (data) => {
             setUsers(data)
         })
 
     }, [])
 
+    useEffect(() => {
+        socket.emit('user-join', { title: title, message: value, language: language })
+    }, [sendInitialData])
+
     const languages = ["javascript", "python", "c", "c", "java", "go"]
-
     const changeLanguage = (e) => {
-        // console.log(languages[e.target.value])
-
         setLanguage(languages[e.target.value])
     }
 
@@ -106,13 +127,13 @@ const Editor = (props) => {
                 <div className="navBar">
                     <div className={theme === "light" ? 'listButton-light' : 'listButton-dark'}>
                         {theme === "light" &&
-                        <FaRegLightbulb className="bulbIcon" onClick={toggleTheme} disabled={!isEditorReady}></FaRegLightbulb>
+                            <FaRegLightbulb className="bulbIcon" onClick={toggleTheme} disabled={!isEditorReady}></FaRegLightbulb>
 
-                            }
+                        }
                         {theme !== "light" &&
 
                             <RiSunLine className="sunIcon" onClick={toggleTheme} disabled={!isEditorReady}></RiSunLine>
-                            }
+                        }
 
                         <select className={theme === "light" ? 'select-light' : 'select-dark'} onChange={changeLanguage} value="language">
                             <option value="-1">Language</option>
@@ -126,6 +147,10 @@ const Editor = (props) => {
 
                         <span className={theme === "light" ? 'language-name-light' : 'language-name-dark'}>{language[0].toUpperCase() + language.substr(1)}</span>
                         <span className={theme === "light" ? 'language-name-light' : 'language-name-dark'}>Participants: {users}</span>
+                        <div className="title-doc">
+                            <input className={theme === "light" ? 'input-light' : 'input-dark'} type="text" value={title} onChange={e => setTitle(e.target.value)}></input>
+                        </div>
+
                     </div>
                     <ControlledEditor
                         height="100vh"

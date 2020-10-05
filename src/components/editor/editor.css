@@ -1,5 +1,4 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
-
 body {
     margin: 0;
     font-family: 'Poppins', sans-serif;
@@ -28,54 +27,95 @@ body {
 }
 
 .select-dark {
-    -webkit-appearance:none;
-    -moz-appearance:none;
-    -ms-appearance:none;
-    appearance:none;
-    outline:0;
-    box-shadow:none;
-    border:0!important;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    -ms-appearance: none;
+    appearance: none;
+    outline: 0;
+    box-shadow: none;
+    border: 0!important;
     background: #5c6664;
     background-image: none;
-    flex: 1;
     padding: 0 .5em;
     margin-left: 0.5%;
-    color:#fff;
-    cursor:pointer;
+    color: #fff;
+    cursor: pointer;
     font-size: 1em;
-    font-family: 'Open Sans', sans-serif;
- }
- .select-light {
-    -webkit-appearance:none;
-    -moz-appearance:none;
-    -ms-appearance:none;
-    appearance:none;
-    outline:0;
-    box-shadow:none;
-    border:0!important;
+}
+
+.select-light {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    -ms-appearance: none;
+    appearance: none;
+    outline: 0;
+    box-shadow: none;
+    border: 0!important;
     background: #f5e9e9;
     background-image: none;
-    flex: 1;
     padding: 0 .5em;
     margin-left: 0.5%;
-    color:black;
-    cursor:pointer;
+    color: black;
+    cursor: pointer;
     font-size: 1em;
-    font-family: 'Open Sans', sans-serif;
- }
- .select::-ms-expand {
+}
+
+.select::-ms-expand {
     display: none;
- }
- 
+}
+
+.title-doc {
+    display: inline;
+    position: absolute;
+    left: 45%;
+    padding-top: 0.25%;
+}
+
+.input-dark {
+    margin-right: auto;
+    margin-left: auto;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    -ms-appearance: none;
+    appearance: none;
+    outline: 0;
+    box-shadow: none;
+    border: 0!important;
+    background: #202124;
+    background-image: none;
+    padding: 0 .5em;
+    margin-left: 0.5%;
+    color: #fff;
+    cursor: pointer;
+    font-size: 1em;
+}
+
+.input-light {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    -ms-appearance: none;
+    appearance: none;
+    outline: 0;
+    box-shadow: none;
+    border: 0!important;
+    background: white;
+    background-image: none;
+    padding: 0 .5em;
+    margin-left: 0.5%;
+    color: black;
+    cursor: pointer;
+    font-size: 1em;
+}
+
 .sunIcon {
     color: white;
     transform: scale(1.25);
     margin-top: 0.25%;
     margin-left: 1.5%;
- }
+}
 
- .bulbIcon {
-     margin-left: 1.5%;
-     transform: scale(1.25);
-     margin-top: 0.25%;
- }
+.bulbIcon {
+    margin-left: 1.5%;
+    transform: scale(1.25);
+    margin-top: 0.25%;
+}

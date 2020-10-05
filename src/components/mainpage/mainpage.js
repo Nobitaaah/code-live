@@ -8,7 +8,7 @@ import './mainpage.css'
 import codeShareGIF from './coded-shareGIF.gif'
 import { TimelineLite, TweenMax, Power3 } from 'gsap';
 import jwt_decode from "jwt-decode";
-import { logoutUser } from "../../actions/authActions";
+import jwt from 'jsonwebtoken'
 
 function MainPage(props) {
     const socket = props.socket
@@ -31,7 +31,12 @@ function MainPage(props) {
         const token = localStorage.getItem('jwtToken');
         if (token) {
             const decoded = jwt_decode(token);
-            console.log(decoded)
+            
+            // jwt.verify(token, 'rohanforpm', function(err, decoded) {
+            //     console.log(err)
+            //     console.log(decoded) // bar
+            //   });
+            // console.log(decoded_)
             setName(decoded.name)
             setRender(false)
         }
@@ -61,17 +66,14 @@ function MainPage(props) {
     useEffect(() => {
 
         //content vars
-        // const headlineFirst = content.children[0].children[0];
-        // const headlineSecond = headlineFirst.nextSibling;
-        // const headlineThird = headlineSecond.nextSibling;
+
         const contentP = content.children[1];
-        // const contentButton = content.children[2];
 
         //Remove initial flash
         TweenMax.to(app, 0, { css: { visibility: 'visible' } })
         // TweenMax.to(button, 5.5, { css: { visibility: 'visible' } })
-        TweenMax.to(button, 1, { opacity: 1, delay: 3 });
-        TweenMax.to(headlineThird, 1, { opacity: 1, delay: 2 });
+        TweenMax.to(button, 0.5, { opacity: 1, delay: 2.5 });
+        TweenMax.to(headlineThird, 0.5, { opacity: 1, delay: 2 });
 
 
         tl.from(image, 0.6, { y: 1280, ease: Power3.easeOut }, 'Start')
@@ -80,9 +82,9 @@ function MainPage(props) {
         tl.staggerFrom([headlineSecond], 1, {
             y: 0,
             ease: Power3.easeOut,
-            delay: .4
+            delay: .2
         }, .15, 'Start')
-            .from(contentP, 1, { y: 40, opacity: 0, ease: Power3.easeOut }, 0.8)
+            .from(contentP, 1, { y: 40, opacity: 0, ease: Power3.easeOut }, 0.6)
         // .from(contentButton, 1, { y: 20, opacity: 0, ease: Power3.easeOut }, 1.6)
 
     }, [tl])
@@ -98,7 +100,7 @@ function MainPage(props) {
     };
 
     return (
-        <div className="main" ref={el => app = el}>
+        <div className="mainPage" ref={el => app = el}>
             <nav class="navbar">
                 <Link to="/" className="logo">CodeLive</Link>
                 <ul class="nav-links">
@@ -150,13 +152,3 @@ function MainPage(props) {
 }
 
 export default MainPage;
-
-
-    // useEffect(() => {
-    //     const token = localStorage.getItem('jwtToken');
-    //     if (token) {
-    //         const decoded = jwt_decode(token);
-    //         setName(decoded.name)
-    //     }
-
-    // }, [])

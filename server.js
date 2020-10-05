@@ -54,11 +54,22 @@ io.on("connection", (socket) => {
 
     })
 
+    socket.on('user-join', msg => {
+        console.log(socket.id)
+        console.log(msg)
+    })
+
     socket.on('join-room', msg => {
         console.log("JOINING " + msg)
         socket.room = msg
         socket.join(msg)
         let room = io.sockets.adapter.rooms[socket.room]
+        if (room.length>2) {
+            console.log("WHY")
+            let user = Object.keys(room.sockets)[0]
+            io.to(user).emit('request-info', "");
+            // socket.emit('request-info', )
+        }
         io.sockets.in(socket.room).emit('joined-users', room.length)
     })
 
@@ -68,10 +79,13 @@ io.on("connection", (socket) => {
     })
 
 
-
     // If language changes, broadcast to sockets
     socket.on('language-change', msg => {
         io.sockets.in(socket.room).emit('language-update', msg)
+    })
+
+    socket.on('title-change', msg => {
+        io.sockets.in(socket.room).emit('title-update', msg)
     })
 
     // If connection is lost
