@@ -55,8 +55,9 @@ io.on("connection", (socket) => {
     })
 
     socket.on('user-join', msg => {
-        console.log(socket.id)
-        console.log(msg)
+        let room = io.sockets.adapter.rooms[socket.room]
+        let lastPerson = Object.keys(room.sockets)[room.length - 1]
+        io.to(lastPerson).emit('accept-info', msg);
     })
 
     socket.on('join-room', msg => {
@@ -64,11 +65,10 @@ io.on("connection", (socket) => {
         socket.room = msg
         socket.join(msg)
         let room = io.sockets.adapter.rooms[socket.room]
-        if (room.length>2) {
-            console.log("WHY")
+        if (room.length>1) {
+            console.log("sending")
             let user = Object.keys(room.sockets)[0]
             io.to(user).emit('request-info', "");
-            // socket.emit('request-info', )
         }
         io.sockets.in(socket.room).emit('joined-users', room.length)
     })

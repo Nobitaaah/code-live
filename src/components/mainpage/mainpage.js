@@ -5,10 +5,11 @@ import {
     useHistory
 } from "react-router-dom";
 import './mainpage.css'
-import codeShareGIF from './coded-shareGIF.gif'
+import codeShare from './codeShare.gif'
 import { TimelineLite, TweenMax, Power3 } from 'gsap';
 import jwt_decode from "jwt-decode";
 import jwt from 'jsonwebtoken'
+import {FaGithub } from 'react-icons/fa';
 
 function MainPage(props) {
     const socket = props.socket
@@ -53,7 +54,7 @@ function MainPage(props) {
     useEffect(() => {
         if (code != "") {
             if (name == "") {
-                history.push(`/login`)
+                history.push(`/register`)
             } else {
                 socket.emit('created-room', code)
                 console.log('CREATED-ROOM')
@@ -72,8 +73,9 @@ function MainPage(props) {
         //Remove initial flash
         TweenMax.to(app, 0, { css: { visibility: 'visible' } })
         // TweenMax.to(button, 5.5, { css: { visibility: 'visible' } })
-        TweenMax.to(button, 0.5, { opacity: 1, delay: 2.5 });
         TweenMax.to(headlineThird, 0.5, { opacity: 1, delay: 2 });
+        TweenMax.to(button, 0.5, { opacity: 1, delay: 2.5 });
+        
 
 
         tl.from(image, 0.6, { y: 1280, ease: Power3.easeOut }, 'Start')
@@ -105,12 +107,14 @@ function MainPage(props) {
                 <Link to="/" className="logo">CodeLive</Link>
                 <ul class="nav-links">
                     {name != "" ?
-                        <><li class="nav-item link"><Link to="/register">Hello, {name}</Link></li>
-                            <li class="nav-item login link "><Link to="/" onClick={onLogoutClick}>Log out</Link></li></ > :
-                        <><li class="nav-item link"><Link to="/register">Sign up</Link></li>
-                            <li class="nav-item login link "><Link to="/login">Log in</Link></li></ >}
-                    {/* <li class="nav-item link"><Link to="/register">Sign up</Link></li>
-                    <li class="nav-item login link "><Link to="/login">Log in</Link></li> */}
+                        <>
+                        <li class="nav-item linkAnim"><a href="https://github.com/Nobitaaah/code-live">Github</a></li>
+                        <li class="nav-item">Hello, {name}</li>
+                            <li class="nav-item login linkAnim "><Link to="/" onClick={onLogoutClick}>Log out</Link></li></ > :
+                        <>
+                        <li class="nav-item linkAnim"><a href="https://github.com/Nobitaaah/code-live">Github</a></li>
+                        <li class="nav-item linkAnim"><Link to="/register">Sign up</Link></li>
+                            <li class="nav-item login linkAnim "><Link to="/login">Log in</Link></li></ >}
                 </ul>
             </nav>
 
@@ -124,7 +128,7 @@ function MainPage(props) {
                     </div>
 
                     <div className="container-flex-intro-video">
-                        <img src={codeShareGIF} className="codeShareGIF" ref={el => image = el} />
+                        <img src={codeShare} className="codeShareGIF" ref={el => image = el} />
                     </div>
                     <div className="headlineThird container-flex-intro-continue" ref={el => headlineThird = el}>
                         Supports multiple languages with no limit on participants.
@@ -132,7 +136,7 @@ function MainPage(props) {
                 </div>
 
             </div>
-            <div className="create-room ui text container" style={{ textAlign: "center" }} ref={el => button = el}>
+            <div className="create-room-main ui text container" style={{ textAlign: "center" }} ref={el => button = el}>
                 <div onClick={generateCode}
                     className="ui huge black button"
                     style={{ marginTop: "5vh", marginRight: "0em" }}
@@ -140,12 +144,6 @@ function MainPage(props) {
                     Create a Room
                 </div>
             </div>
-            {code.length > 0 &&
-                <div className="ui text container" style={{ textAlign: "center" }}>
-                    <h1 style={{ marginTop: "1.5em", marginRight: "0em" }} ><Link to={newTo}>Join</Link></h1>
-
-                </div>
-            }
 
 
         </div >);

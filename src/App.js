@@ -49,7 +49,7 @@ function App() {
           <Route exact path="/" component={() => <MainPage socket={socket} />} />
           <Route exact path="/login" component={Login} />
           <Switch>
-            <PrivateRoute exact path="/dashboard" component={Dashboard} />
+            <PrivateRoute exact path="/dashboard" component={() => <Dashboard socket={socket} />} />
           </Switch>
         </div>
       </BrowserRouter>

@@ -3,8 +3,14 @@ import './editor.css'
 import { ControlledEditor } from "@monaco-editor/react"
 import { useLocation, useParams } from "react-router-dom";
 import { FaRegLightbulb } from 'react-icons/fa';
-import { RiSunLine } from 'react-icons/ri';
+import { RiSunLine, RiCheckLine, RiCheckFill } from 'react-icons/ri';
 import jwt_decode from "jwt-decode";
+import { compareSync } from 'bcryptjs';
+import {
+    BrowserRouter as Router,
+    Link,
+    useHistory
+} from "react-router-dom";
 
 // Code editor
 const Editor = (props) => {
@@ -25,6 +31,8 @@ const Editor = (props) => {
     const [sendInitialData, setSendInitialData] = useState(false)
     const [users, setUsers] = useState(0)
     const [title, setTitle] = useState("Untitled")
+    const [titleInfo, setTitleInfo] = useState("Untitled")
+    const [titleChange, setTitleChange] = useState(false)
     const valueGetter = useRef();
     let { id } = useParams();
 
@@ -60,27 +68,24 @@ const Editor = (props) => {
     // If language changes on one socket, emit to all other
     useEffect(() => {
         socket.emit('language-change', language)
-        // console.log('LANGUAGE CHANGE SENT')
     }, [language])
 
 
     // If there is a code change on a socket, emit to all other
     useEffect(() => {
         socket.emit('code-change', message)
-        // console.log('MESSAGE SENT')
     }, [message])
 
 
     useEffect(() => {
+        console.log("Title Updating")
         socket.emit('title-change', title)
-        // console.log('MESSAGE SENT')
     }, [title])
 
 
     // Recieve code changes and language changes
     useEffect(() => {
         socket.on('code-update', (data) => {
-            console.log('RECEIVED')
             setValue(data)
         })
         socket.on('language-update', (data) => {
@@ -88,7 +93,7 @@ const Editor = (props) => {
         })
 
         socket.on('title-update', (data) => {
-            setTitle(data)
+            setTitleInfo(data)
         })
 
         socket.on('room-check', (data) => {
@@ -102,9 +107,13 @@ const Editor = (props) => {
 
         socket.on('request-info', (data) => {
             setSendInitialData(true)
-            // socket.emit('user-join', { title: title, message: value, language: language })
         })
 
+        socket.on('accept-info', (data) => {
+            console.log(data)
+            setTitleInfo(data.title)
+            setLanguage(data.language)
+        })
 
         socket.on('joined-users', (data) => {
             setUsers(data)
@@ -113,7 +122,10 @@ const Editor = (props) => {
     }, [])
 
     useEffect(() => {
-        socket.emit('user-join', { title: title, message: value, language: language })
+        if (sendInitialData == true) {
+            socket.emit('user-join', { title: title, language: language })
+            setSendInitialData(false)
+        }
     }, [sendInitialData])
 
     const languages = ["javascript", "python", "c", "c", "java", "go"]
@@ -121,11 +133,23 @@ const Editor = (props) => {
         setLanguage(languages[e.target.value])
     }
 
+    const titleUpdating = (e) => {
+        setTitleInfo(e.target.value)
+        setTitleChange(true)
+    }
+
+    const titleUpdated = (e) => {
+        setTitle(titleInfo)
+        setTitleChange(false)
+    }
+
     const renderTrue = () => {
         return (
             <>
                 <div className="navBar">
+                    
                     <div className={theme === "light" ? 'listButton-light' : 'listButton-dark'}>
+                    <Link to="/" className="logoEditor">CodeLive</Link>
                         {theme === "light" &&
                             <FaRegLightbulb className="bulbIcon" onClick={toggleTheme} disabled={!isEditorReady}></FaRegLightbulb>
 
@@ -148,8 +172,12 @@ const Editor = (props) => {
                         <span className={theme === "light" ? 'language-name-light' : 'language-name-dark'}>{language[0].toUpperCase() + language.substr(1)}</span>
                         <span className={theme === "light" ? 'language-name-light' : 'language-name-dark'}>Participants: {users}</span>
                         <div className="title-doc">
-                            <input className={theme === "light" ? 'input-light' : 'input-dark'} type="text" value={title} onChange={e => setTitle(e.target.value)}></input>
+                            <input className={theme === "light" ? 'input-light' : 'input-dark'} type="text" value={titleInfo} onChange={titleUpdating}></input>
                         </div>
+                        {titleChange === true &&
+                            <RiCheckFill className="checkIcon" onClick={titleUpdated} disabled={!isEditorReady}></RiCheckFill>
+                        }
+                        
 
                     </div>
                     <ControlledEditor

@@ -17,13 +17,27 @@ body {
 }
 
 .language-name-dark {
-    padding-left: 0.5%;
+    padding-left: 1.5%;
     color: white;
 }
 
 .language-name-light {
-    padding-left: 0.5%;
+    padding-left: 1.5%;
     color: dark;
+}
+
+@media only screen and (max-width: 780px) {
+    .title-doc {
+        visibility: hidden;
+    }
+    .language-name-dark {
+        padding-left: 2.5%;
+        color: white;
+    }
+    .language-name-light {
+        padding-left: 2.5%;
+        color: dark;
+    }
 }
 
 .select-dark {
@@ -37,7 +51,7 @@ body {
     background: #5c6664;
     background-image: none;
     padding: 0 .5em;
-    margin-left: 0.5%;
+    margin-left: 1.5%;
     color: #fff;
     cursor: pointer;
     font-size: 1em;
@@ -54,7 +68,7 @@ body {
     background: #f5e9e9;
     background-image: none;
     padding: 0 .5em;
-    margin-left: 0.5%;
+    margin-left: 1.5%;
     color: black;
     cursor: pointer;
     font-size: 1em;
@@ -112,10 +126,26 @@ body {
     transform: scale(1.25);
     margin-top: 0.25%;
     margin-left: 1.5%;
+    cursor: pointer;
 }
 
 .bulbIcon {
-    margin-left: 1.5%;
     transform: scale(1.25);
+    margin-left: 1.5%;
     margin-top: 0.25%;
+    cursor: pointer;
+}
+
+.checkIcon {
+    transform: scale(1);
+    color: white;
+    position: absolute;
+    left: 43.5%;
+    cursor: pointer;
+    margin-top: 0.35%;
+}
+
+.logoEditor {
+    font-size: 1.25em;
+    margin-left: 1.5%;
 }
