@@ -34,4 +34,4 @@ npm run start
 - [ ] Allow webcam streaming
 - [ ] Add admin controls for creator of room
 - [ ] Use Docker
-- [ ] Improve code qualitygit
+- [ ] Improve code quality
