@@ -2,7 +2,7 @@
 
 # CodeLive
 
-An easy to use Collaborative Code Editor written using Node.js, React, Redux and MongoDB.
+An easy to use Collaborative Code Editor written using Node.js, React, Redux, Socket.io and MongoDB.
 
 Supports auto completion and syntax highlighting for multiple languages. No limit on participants. It uses the [React wrapper](https://github.com/suren-atoyan/monaco-react#readme) for Monaco editor.
 
