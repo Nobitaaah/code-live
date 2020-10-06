@@ -4,7 +4,7 @@
 
 An easy to use Collaborative Code Editor written using Node.js, React, Redux and MongoDB.
 
-Support auto completion and syntax highlighting for multiple languages. No limit on participants.Below the hood, it uses the [React wrapper](https://github.com/suren-atoyan/monaco-react#readme) for Monaco editor.
+Supports auto completion and syntax highlighting for multiple languages. No limit on participants. It uses the [React wrapper](https://github.com/suren-atoyan/monaco-react#readme) for Monaco editor.
 
 ![image](https://github.com/Nobitaaah/code-live/blob/master/src/components/mainpage/codeShare.gif)
 
