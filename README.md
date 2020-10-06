@@ -1,3 +1,5 @@
+### https://livecodeshare.herokuapp.com/
+
 # CodeLive
 
 An easy to use Collaborative Code Editor written using Node.js, React, Redux and MongoDB.
@@ -22,26 +24,6 @@ npm run start
 
 # Go to http://localhost:3000 to see it live.
 ```
-## Project Layout
-
-├───config
-├───models
-├───public
-├───routes
-│   └───api
-├───src
-│   ├───actions
-│   ├───components
-│   │   ├───auth
-│   │   ├───dashboard
-│   │   ├───editor
-│   │   ├───layout
-│   │   ├───mainpage
-│   │   └───private-route
-│   ├───reducers
-│   └───utils
-└───validation
-
 ### TODO
 
 - [ ] Add tests
