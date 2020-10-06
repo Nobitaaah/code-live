@@ -1,0 +1,8 @@
+{
+    "CodeLive": {
+        "dbConfig": {
+            "uri": "mongodb+srv://your-url"
+        },
+        "secret": "secretkeyhere"
+    }
+}

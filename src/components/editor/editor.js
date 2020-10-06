@@ -1,16 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react'
+import { Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
+
 import './editor.css'
+
 import { ControlledEditor } from "@monaco-editor/react"
-import { useLocation, useParams } from "react-router-dom";
 import { FaRegLightbulb } from 'react-icons/fa';
-import { RiSunLine, RiCheckLine, RiCheckFill } from 'react-icons/ri';
-import jwt_decode from "jwt-decode";
-import { compareSync } from 'bcryptjs';
-import {
-    BrowserRouter as Router,
-    Link,
-    useHistory
-} from "react-router-dom";
+import { RiSunLine, RiCheckFill } from 'react-icons/ri';
+
 
 // Code editor
 const Editor = (props) => {
@@ -33,9 +30,9 @@ const Editor = (props) => {
     const [title, setTitle] = useState("Untitled")
     const [titleInfo, setTitleInfo] = useState("Untitled")
     const [titleChange, setTitleChange] = useState(false)
-    const valueGetter = useRef();
     let { id } = useParams();
 
+    // Check if room exists
     useEffect(() => {
         socket.emit('room-id', id)
         setValid(true)
@@ -45,10 +42,9 @@ const Editor = (props) => {
     const editorRef = useRef()
 
     // Called on initialization, adds ref
-    const handleEditorDidMount = (_valueGetter, editor) => {
+    const handleEditorDidMount = (_, editor) => {
         setIsEditorReady(true);
         editorRef.current = editor
-        valueGetter.current = _valueGetter;
     }
 
     // Called whenever there is a change in the editor
@@ -57,12 +53,9 @@ const Editor = (props) => {
         setMessage(value)
     };
 
+    // For theme of code editor
     const toggleTheme = () => {
         setTheme(theme === "light" ? "dark" : "light")
-    }
-
-    const toggleLanguage = () => {
-        setLanguage(language === "javascript" ? "go" : "javascript")
     }
 
     // If language changes on one socket, emit to all other
@@ -74,18 +67,20 @@ const Editor = (props) => {
     // If there is a code change on a socket, emit to all other
     useEffect(() => {
         socket.emit('code-change', message)
+        console.log("CODE-CHANGE: " + message)
     }, [message])
 
-
+    // If there is a title change on a socket, emit to all other
     useEffect(() => {
         console.log("Title Updating")
         socket.emit('title-change', title)
     }, [title])
 
 
-    // Recieve code changes and language changes
+    // Recieve code, title and language changes
     useEffect(() => {
         socket.on('code-update', (data) => {
+            console.log("CODE-UPDATE: " + data)
             setValue(data)
         })
         socket.on('language-update', (data) => {
@@ -97,7 +92,7 @@ const Editor = (props) => {
         })
 
         socket.on('room-check', (data) => {
-            if (data == false) {
+            if (data === false) {
                 setValid(false)
             } else {
                 socket.emit('join-room', id)
@@ -109,18 +104,22 @@ const Editor = (props) => {
             setSendInitialData(true)
         })
 
+        // Triggered if new user joins
         socket.on('accept-info', (data) => {
             console.log(data)
             setTitleInfo(data.title)
             setLanguage(data.language)
         })
 
+        // Update participants
         socket.on('joined-users', (data) => {
             setUsers(data)
         })
 
     }, [])
 
+
+    // If a new user join, send him current language and title used by other sockets.
     useEffect(() => {
         if (sendInitialData == true) {
             socket.emit('user-join', { title: title, language: language })
@@ -128,7 +127,8 @@ const Editor = (props) => {
         }
     }, [sendInitialData])
 
-    const languages = ["javascript", "python", "c", "c", "java", "go"]
+    const languages = ["javascript", "python", "c++", "c", "java", "go"]
+
     const changeLanguage = (e) => {
         setLanguage(languages[e.target.value])
     }
@@ -147,9 +147,9 @@ const Editor = (props) => {
         return (
             <>
                 <div className="navBar">
-                    
+
                     <div className={theme === "light" ? 'listButton-light' : 'listButton-dark'}>
-                    <Link to="/" className="logoEditor">CodeLive</Link>
+                        <Link to="/" className="logoEditor">CodeLive</Link>
                         {theme === "light" &&
                             <FaRegLightbulb className="bulbIcon" onClick={toggleTheme} disabled={!isEditorReady}></FaRegLightbulb>
 
@@ -177,7 +177,6 @@ const Editor = (props) => {
                         {titleChange === true &&
                             <RiCheckFill className="checkIcon" onClick={titleUpdated} disabled={!isEditorReady}></RiCheckFill>
                         }
-                        
 
                     </div>
                     <ControlledEditor

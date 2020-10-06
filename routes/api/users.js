@@ -2,12 +2,14 @@ const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const keys = require("../../config/keys");
+const config = require('config');
 
 const validateRegisterInput = require("../../validation/register");
 const validateLoginInput = require("../../validation/login");
 
 const User = require("../../models/User");
+const secret = config.get('CodeLive.secret');
+
 
 // @route POST api/users/register
 // @desc Register User
@@ -73,14 +75,14 @@ router.post("/login", (req, res) => {
         // Sign Token
         jwt.sign(
           payload,
-          keys.secretOrKey,
+          secret,
           {
             expiresIn: 31556926,
           },
           (err, token) => {
             res.json({
               success: true,
-              token: "Bearer" + token,
+              token: token,
             });
           }
         );

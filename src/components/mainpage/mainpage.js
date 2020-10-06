@@ -1,29 +1,31 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
-    BrowserRouter as Router,
     Link,
     useHistory
 } from "react-router-dom";
+
 import './mainpage.css'
 import codeShare from './codeShare.gif'
 import { TimelineLite, TweenMax, Power3 } from 'gsap';
-import jwt_decode from "jwt-decode";
-import jwt from 'jsonwebtoken'
-import {FaGithub } from 'react-icons/fa';
+
+import jwt_decode from 'jwt-decode'
 
 function MainPage(props) {
+
     const socket = props.socket
     const char_list = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
     const length = 6
+
     const [code, setCode] = useState("")
     const [name, setName] = useState("")
     const [render, setRender] = useState(true)
+
     const history = useHistory();
+
     let app = useRef(null)
     let content = useRef(null)
     let image = useRef(null)
     let button = useRef(null)
-    let headlineFirst = useRef(null)
     let headlineSecond = useRef(null)
     let headlineThird = useRef(null)
     let tl = new TimelineLite({ delay: .4 });
@@ -32,12 +34,6 @@ function MainPage(props) {
         const token = localStorage.getItem('jwtToken');
         if (token) {
             const decoded = jwt_decode(token);
-            
-            // jwt.verify(token, 'rohanforpm', function(err, decoded) {
-            //     console.log(err)
-            //     console.log(decoded) // bar
-            //   });
-            // console.log(decoded_)
             setName(decoded.name)
             setRender(false)
         }
@@ -52,8 +48,8 @@ function MainPage(props) {
     }
 
     useEffect(() => {
-        if (code != "") {
-            if (name == "") {
+        if (code !== "") {
+            if (name === "") {
                 history.push(`/register`)
             } else {
                 socket.emit('created-room', code)
@@ -67,7 +63,6 @@ function MainPage(props) {
     useEffect(() => {
 
         //content vars
-
         const contentP = content.children[1];
 
         //Remove initial flash
@@ -75,10 +70,8 @@ function MainPage(props) {
         // TweenMax.to(button, 5.5, { css: { visibility: 'visible' } })
         TweenMax.to(headlineThird, 0.5, { opacity: 1, delay: 2 });
         TweenMax.to(button, 0.5, { opacity: 1, delay: 2.5 });
-        
 
-
-        tl.from(image, 0.6, { y: 1280, ease: Power3.easeOut }, 'Start')
+        tl.from(image, 1.6, { x: -1280, ease: Power3.easeOut }, 'Start')
 
         // Content Animation
         tl.staggerFrom([headlineSecond], 1, {
@@ -91,11 +84,6 @@ function MainPage(props) {
 
     }, [tl])
 
-    const newTo = {
-        pathname: `/editor/${code}`,
-        state: code
-    };
-
     const onLogoutClick = (e) => {
         localStorage.removeItem("jwtToken");
         window.location.reload();
@@ -103,24 +91,24 @@ function MainPage(props) {
 
     return (
         <div className="mainPage" ref={el => app = el}>
-            <nav class="navbar">
+            <nav className="navbar">
                 <Link to="/" className="logo">CodeLive</Link>
-                <ul class="nav-links">
-                    {name != "" ?
+                <ul className="nav-links">
+                    {name !== "" ?
                         <>
-                        <li class="nav-item linkAnim"><a href="https://github.com/Nobitaaah/code-live">Github</a></li>
-                        <li class="nav-item">Hello, {name}</li>
-                            <li class="nav-item login linkAnim "><Link to="/" onClick={onLogoutClick}>Log out</Link></li></ > :
+                            <li className="nav-item linkAnim"><a href="https://github.com/Nobitaaah/code-live">Github</a></li>
+                            <li className="nav-item">Hello, {name}</li>
+                            <li className="nav-item login linkAnim "><Link to="/" onClick={onLogoutClick}>Log out</Link></li></ > :
                         <>
-                        <li class="nav-item linkAnim"><a href="https://github.com/Nobitaaah/code-live">Github</a></li>
-                        <li class="nav-item linkAnim"><Link to="/register">Sign up</Link></li>
-                            <li class="nav-item login linkAnim "><Link to="/login">Log in</Link></li></ >}
+                            <li className="nav-item linkAnim"><a href="https://github.com/Nobitaaah/code-live">Github</a></li>
+                            <li className="nav-item linkAnim"><Link to="/register">Sign up</Link></li>
+                            <li className="nav-item login linkAnim "><Link to="/login">Log in</Link></li></ >}
                 </ul>
             </nav>
 
             <div className="container-flex">
                 <div className="container-flex-info" ref={el => content = el}>
-                    <div className="container-flex-title" ref={el => headlineFirst = el}>
+                    <div className="container-flex-title" >
                         Live code sharing made easy.
                     </div>
                     <div className="container-flex-intro" ref={el => headlineSecond = el}>
@@ -128,7 +116,7 @@ function MainPage(props) {
                     </div>
 
                     <div className="container-flex-intro-video">
-                        <img src={codeShare} className="codeShareGIF" ref={el => image = el} />
+                        <img src={codeShare} className="codeShareGIF" ref={el => image = el} alt="code share gif" />
                     </div>
                     <div className="headlineThird container-flex-intro-continue" ref={el => headlineThird = el}>
                         Supports multiple languages with no limit on participants.
