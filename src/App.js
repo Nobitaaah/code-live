@@ -38,6 +38,7 @@ function App() {
   const io = require('socket.io-client')
   // URL of server, todo: add dynamic url 
   const socket = io('http://localhost:5000', { path: '/sockets' })
+  // const socket = io('http://192.168.100.35:3000', { path: '/sockets' })
   return (
     <Provider store={store}>
       <BrowserRouter>

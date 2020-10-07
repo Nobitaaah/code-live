@@ -5,7 +5,8 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const passport = require("passport");
 const config = require('config');
-const users = require("./routes/api/users")
+const users = require("./routes/api/users");
+const { remove } = require('./models/User');
 
 const port = process.env.PORT || 5000;
 
@@ -18,9 +19,9 @@ app.use(bodyParser.json());
 const db = config.get('CodeLive.dbConfig.uri');
 
 mongoose
-  .connect(db, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log("MongoDB connected"))
-  .catch((err) => console.log(err));
+    .connect(db, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => console.log("MongoDB connected"))
+    .catch((err) => console.log(err));
 
 app.use(passport.initialize());
 require("./config/passport")(passport);
@@ -31,9 +32,27 @@ const server = http.createServer(app)
 // Create a socketIO server
 const io = socketIO(server, { path: '/sockets' })
 
-var usernames = {}
 
 var rooms = []
+var removeRooms = []
+
+function removingRooms() {
+
+    console.log("ROOMS: " + rooms)
+    if (removeRooms.length != 0) {
+        for (let i = 0; i < removeRooms.length; i++) {
+            if (io.sockets.adapter.rooms[removeRooms[i]] === undefined) {
+                rooms = rooms.filter(function (item) {
+                    return item !== removeRooms[i]
+                })
+            }
+        }
+    }
+    removeRooms.splice(0,removeRooms.length)
+
+    setTimeout(removingRooms, 60 * 60 * 1000);
+}
+
 
 // Triggered whenever a user joins and websocket
 // handshake is successfull
@@ -68,7 +87,7 @@ io.on("connection", (socket) => {
         socket.room = msg
         socket.join(msg)
         let room = io.sockets.adapter.rooms[socket.room]
-        if (room.length>1) {
+        if (room.length > 1) {
             let user = Object.keys(room.sockets)[0]
             io.to(user).emit('request-info', "");
         }
@@ -100,19 +119,19 @@ io.on("connection", (socket) => {
     socket.on('disconnecting', () => {
         try {
             let room = io.sockets.adapter.rooms[socket.room]
-            io.sockets.in(socket.room).emit('joined-users', room.length-1)
+            io.sockets.in(socket.room).emit('joined-users', room.length - 1)
             if (room.length === 1) {
-                console.log("Leaving Room")
-                rooms = rooms.filter(function(item) {
-                    return item !== socket.room
-                })
+                console.log("Leaving Room " + socket.room)
                 socket.leave(socket.room)
+                removeRooms.push(socket.room)
             }
         }
-        catch(error) {
+        catch (error) {
             console.log("Disconnect error")
         }
     })
 });
+
+removingRooms()
 
 server.listen(port, () => console.log(`Listening on port ${port}`))

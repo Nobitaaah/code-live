@@ -149,3 +149,14 @@ body {
     font-size: 1.25em;
     margin-left: 1.5%;
 }
+
+.mobile-notValid {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+    flex-wrap: wrap;
+    height: 95vh;
+}
