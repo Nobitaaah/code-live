@@ -26,6 +26,8 @@ npm run start
 
 # Go to http://localhost:3000 to see it live.
 ```
+The code editor won't work on mobile as Monaco Editor has weird issues with touch devices. Will add a read-only mode for mobile users in the future.
+
 ### TODO
 
 - [ ] Add tests
