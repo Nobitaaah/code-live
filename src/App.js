@@ -1,18 +1,11 @@
-import React from "react";
+import React, {useEffect} from "react";
 import { BrowserRouter, Route, Switch, Link } from "react-router-dom";
 import { Provider } from "react-redux";
 import jwt_decode from "jwt-decode";
 import setAuthToken from "./utils/setAuthToken";
 import { setCurrentUser, logoutUser } from "./actions/authActions";
 
-/*
-1. Changed file structure to a single node modules directory.
-2. Update krlena npm run dev.
-3. Removed redundant imports and added index.js in the components directory.
-4. Updated server.js file with socket.io code.
-5. Added routes in App.js.
-6. Merged Landing page with MainPage component.
-*/
+
 
 import { Register, Login, Landing, Navbar, Dashboard, PrivateRoute, Editor, MainPage } from './components'
 import store from "./store";
@@ -35,6 +28,11 @@ if (localStorage.jwtToken) {
 }
 
 function App() {
+  
+    useEffect(() => {
+    document.title = "CodeLive"
+ }, []);
+
   const io = require('socket.io-client')
   // URL of server, todo: add dynamic url 
   const socket = io('http://localhost:5000', { path: '/sockets' })
