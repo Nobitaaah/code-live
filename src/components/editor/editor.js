@@ -6,6 +6,7 @@ import {
   MobileView
 } from "react-device-detect";
 import './editor.css'
+import axios from "axios";
 
 import { ControlledEditor } from "@monaco-editor/react"
 import { FaRegLightbulb } from 'react-icons/fa';
@@ -20,7 +21,10 @@ const Editor = (props) => {
   // Change theme of editor
   const [theme, setTheme] = useState("dark")
   // Default language JS
-  const [language, setLanguage] = useState("javascript")
+  const [language, setLanguage] = useState("63")
+  const [customInput, setCustomInput] = useState("");
+  const [outputDetails, setOutputDetails] = useState(null);
+  const [processing, setProcessing] = useState(null);
   // Check if editor is ready
   const [isEditorReady, setIsEditorReady] = useState(false)
   // Send chunks of code on change
@@ -83,7 +87,6 @@ const Editor = (props) => {
   // Recieve code, title and language changes
   useEffect(() => {
     socket.on('code-update', (data) => {
-      console.log("CODE-UPDATE: " + data)
       setValue(data)
     })
     socket.on('language-update', (data) => {
@@ -129,11 +132,17 @@ const Editor = (props) => {
       setSendInitialData(false)
     }
   }, [sendInitialData])
-
-  const languages = ["javascript", "python", "c++", "c", "java", "go"]
+  const languages = {
+    "63": "javascript",
+    "70": "python",
+    "54": "c++",
+    "49": "c",
+    "62": "java",
+    "60": "go"
+  }
 
   const changeLanguage = (e) => {
-    setLanguage(languages[e.target.value])
+    setLanguage(e.target.value)
   }
 
   const titleUpdating = (e) => {
@@ -146,44 +155,119 @@ const Editor = (props) => {
     setTitleChange(false)
   }
 
+  const handleCompile = () => {
+    setProcessing(true);
+    const formData = {
+      language_id: parseInt(language),
+      // encode source code in base64
+      source_code: btoa(message),
+      stdin: btoa(customInput),
+    };
+    const options = {
+      method: "POST",
+      url: process.env.REACT_APP_RAPID_API_URL,
+      params: { base64_encoded: "true", fields: "*" },
+      headers: {
+        "content-type": "application/json",
+        "Content-Type": "application/json",
+        "X-RapidAPI-Host": process.env.REACT_APP_RAPID_API_HOST,
+        "X-RapidAPI-Key": process.env.REACT_APP_RAPID_API_KEY,
+      },
+      data: formData,
+    };
+
+    axios
+      .request(options)
+      .then(function (response) {
+        console.log("res.data", response.data);
+        const token = response.data.token;
+        checkStatus(token);
+      })
+      .catch((err) => {
+        let error = err.response ? err.response.data : err;
+        // get error status
+        let status = err.response.status;
+        setProcessing(false);
+      });
+  };
+
+  const checkStatus = async (token) => {
+    const options = {
+      method: "GET",
+      url: process.env.REACT_APP_RAPID_API_URL + "/" + token,
+      params: { base64_encoded: "true", fields: "*" },
+      headers: {
+        "X-RapidAPI-Host": process.env.REACT_APP_RAPID_API_HOST,
+        "X-RapidAPI-Key": process.env.REACT_APP_RAPID_API_KEY,
+      },
+    };
+    try {
+      let response = await axios.request(options);
+      let statusId = response.data.status?.id;
+
+      // Processed - we have a result
+      if (statusId === 1 || statusId === 2) {
+        // still processing
+        setTimeout(() => {
+          checkStatus(token)
+        }, 2000)
+        return
+      } else {
+        setProcessing(false)
+        // setOutputDetails(response.data)
+        if (response.data.stderr) {
+          alert(atob(response.data.stderr))
+        } else {
+          alert(atob(response.data.stdout))
+        }
+        return
+      }
+    } catch (err) {
+      console.log("err", err);
+      setProcessing(false);
+    }
+  };
+
   const renderTrue = () => {
     return (
       <>
-      <BrowserView>
-        <div className="navBar">
+        <BrowserView>
+          <div className="navBar">
 
-          <div className={theme === "light" ? 'listButton-light' : 'listButton-dark'}>
-            <Link to="/" className="logoEditor">CodeLive</Link>
-            {theme === "light" &&
-              <FaRegLightbulb className="bulbIcon" onClick={toggleTheme} disabled={!isEditorReady}></FaRegLightbulb>
+            <div className={theme === "light" ? 'listButton-light' : 'listButton-dark'}>
+              <Link to="/" className="logoEditor">CodeLive</Link>
+              {theme === "light" &&
+                <FaRegLightbulb className="bulbIcon" onClick={toggleTheme} disabled={!isEditorReady}></FaRegLightbulb>
 
-            }
-            {theme !== "light" &&
+              }
+              {theme !== "light" &&
 
-              <RiSunLine className="sunIcon" onClick={toggleTheme} disabled={!isEditorReady}></RiSunLine>
-            }
+                <RiSunLine className="sunIcon" onClick={toggleTheme} disabled={!isEditorReady}></RiSunLine>
+              }
 
-            <select className={theme === "light" ? 'select-light' : 'select-dark'} onChange={changeLanguage} value="language">
-              <option value="-1">Language</option>
-              <option value="0">Javascript</option>
-              <option value="1">Python</option>
-              <option value="2">C++</option>
-              <option value="3">C</option>
-              <option value="4">Java</option>
-              <option value="5">Go</option>
-            </select>
+              <select className={theme === "light" ? 'select-light' : 'select-dark'} onChange={changeLanguage} value={language}>
+                <option value="63">Javascript</option>
+                <option value="70">Python</option>
+                <option value="54">C++</option>
+                <option value="49">C</option>
+                <option value="62">Java</option>
+                <option value="60">Go</option>
+              </select>
 
-            <span className={theme === "light" ? 'language-name-light' : 'language-name-dark'}>{language[0].toUpperCase() + language.substr(1)}</span>
-            <span className={theme === "light" ? 'language-name-light' : 'language-name-dark'}>Participants: {users}</span>
-            <div className="title-doc">
-              <input className={theme === "light" ? 'input-light' : 'input-dark'} type="text" value={titleInfo} onChange={titleUpdating}></input>
+              <span className={theme === "light" ? 'language-name-light' : 'language-name-dark'}>Participants: {users}</span>
+              <span className="compil-buttom">
+                <button className={theme === "light" ? 'input-light' : 'input-dark'} type="text" onClick={handleCompile}>Compile</button>
+              </span>
+
+
+              <div className="title-doc">
+                <input className={theme === "light" ? 'input-light' : 'input-dark'} type="text" value={titleInfo} onChange={titleUpdating}></input>
+              </div>
+              {titleChange === true &&
+                <RiCheckFill className="checkIcon" onClick={titleUpdated} disabled={!isEditorReady}></RiCheckFill>
+              }
             </div>
-            {titleChange === true &&
-              <RiCheckFill className="checkIcon" onClick={titleUpdated} disabled={!isEditorReady}></RiCheckFill>
-            }
 
-          </div>
-          
             <ControlledEditor
               height="100vh"
               theme={theme}
@@ -193,8 +277,8 @@ const Editor = (props) => {
               onChange={handleEditorChange}
               loading={"Loading..."}
             />
-          
-        </div>
+
+          </div>
         </BrowserView>
         <MobileView>
           <div className="mobile-notValid">

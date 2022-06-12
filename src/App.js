@@ -5,8 +5,6 @@ import jwt_decode from "jwt-decode";
 import setAuthToken from "./utils/setAuthToken";
 import { setCurrentUser, logoutUser } from "./actions/authActions";
 
-
-
 import { Register, Login, Landing, Navbar, Dashboard, PrivateRoute, Editor, MainPage } from './components'
 import store from "./store";
 

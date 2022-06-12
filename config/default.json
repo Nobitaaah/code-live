@@ -1,8 +1,8 @@
 {
     "CodeLive": {
         "dbConfig": {
-            "uri": "mongodb+srv: your uri"
+            "uri": "mongodb+srv://admin:admin123@cluster0.uk5ip.mongodb.net/codelivedb?retryWrites=true&w=majority"
         },
-        "secret": "secretkeyhere"
+        "secret": "rohanforpm"
     }
 }
